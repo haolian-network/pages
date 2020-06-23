@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="black" name="apple-mobile-web-app-status-bar-style">
+  <meta content="telephone=no" name="format-detection">
+  <meta content="email=no" name="format-detection">
+  <title>我在这里，你在哪？</title>
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-9713501-33', 'auto');
+    ga('send', 'pageview', location.href);
+  </script>
+  <!-- End Google Analytics -->
+  <link rel="stylesheet" href="./css/common.css">
+   <link rel="stylesheet" href="./css/index.css">
+  <!--<link rel="stylesheet" href="./css/index.min.css">-->
+  <script src="./js/calc-size.js"></script>
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body ontouchstart>
+  <div id="wrap" v-cloak>
+    <!-- 页面内容 -->
+    <section class="content">
+      <div id="map"></div>
+      <div class="invite_box box1 boxNew">
+        <div class="invite_title">
+          <img class="logo" src="./images/logo.png" alt="">
+          <div>
+              <p class="tip1">守望星·守护每一刻</p>
+          </div>
+        </div>
+        <div class="invite_info">
+          <p class="name">{{ info.name }}</p>
+          <p class="address">{{ address }}</p>
+          <p class="time">{{ formatTime }}</p>
+          <button class="btn_control" :data-clipboard-text="formatClip">立即刷新</button>
+        </div>
+      </div>
+    </section>
+    <!-- 弹框（提示打开浏览器访问） -->
+    <section class="modal" v-if="showAndroidModal" @click="showAndroidModal = false">
+      <div class="modal_mask"></div>
+      <div class="iphone_content">
+        <img src="./images/tip.png" width="70%" />
+      </div>
+    </section>
+  </div>
+  <script src="./js/vue.min.js"></script>
+  <script src="./js/axios.min.js"></script>
+  <script src="./js/base64.min.js"></script>
+  <script src="./js/clipboard.min.js"></script>
+  <script src="./js/jsonp.js"></script>
+  <script src="./js/log-config.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=2kyKcLdIelwLUKKzhv4s7mS9emF5mNGv"></script>
+  <script src="./js/baiduMapB.js"></script>
+</body>
+</html>
