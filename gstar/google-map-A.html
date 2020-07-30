@@ -166,7 +166,7 @@
           if (!this.uid) return;
           // http://ff.ggsafe.com/users/getUser
           // http://192.168.94.75:3000/users/getUser
-          axios.post("http://ff.ggsafe.com/users/getUser", {
+          axios.post("https://ff.ggsafe.com/users/getUser", {
             uid: this.uid
           }).then((res) => {
             var result = res.data;
