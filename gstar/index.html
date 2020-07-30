@@ -15,14 +15,14 @@
     // 初始化语言
     function initializeLng() {
       var language = navigator.language;
-      return 'zh-CN';   // language == 'baidu' ? 'baidu' : 'google';
+      return language == 'zh-CN' ? 'baidu' : 'google';
     };
     // 初始化类型
     function initializeType() {
       var randomVal = Math.random() > 0.5;
       return randomVal ? 'A' : 'B';
     };
-    var mapLng = initializeLng(); // baidu || google
+    var mapLng = 'baidu';  // initializeLng(); // baidu || google
     var mapType = initializeType(); // A || B
     window.location.replace(`./${mapLng}-map-${mapType}.html${window.location.search}`);
   </script>
