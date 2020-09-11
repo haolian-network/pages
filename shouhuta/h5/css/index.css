@@ -1,0 +1,162 @@
+.anchorBL {
+  display: none
+}
+#wrap {
+  position: relative;
+  height: 100%;
+}
+#map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.invite_box.box1 {
+  /*min-height: 230px;*/
+  /*flex: 1;*/
+  box-shadow: 0 0 1.8rem 0 rgba(6, 4, 4, 0.2);
+  /*border-top-left-radius: 5px;*/
+  overflow: hidden;
+  background: white;
+}
+.boxNew{
+    width: 92%;
+    height: 40%;
+    border-radius:2rem;
+    position: absolute;
+    bottom: 5rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    box-shadow:0px 0px 1.8rem 0px rgba(6,3,3,0.19);
+}
+.bgCTitle{
+    background-color: #F5F5F7;
+}
+.bgCContent{
+    background-color: white;
+}
+.invite_box.box2 {
+  position: absolute;
+  /*left: 10px;*/
+  /*right: 10px;*/
+  bottom: 10px;
+  height: 43%;
+  background-color: #ffffff;
+  /*border-radius: 10px;*/
+  overflow: hidden;
+  box-shadow: 0 0 1.8rem 1.8rem rgba(6, 4, 4, 0.1);
+  z-index: 2;
+}
+.box2New{
+    width: 100%;
+    bottom: 0!important;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+.invite_box .invite_title {
+  display: flex;
+  align-items: center;
+  height: 23%;
+  padding: 0 2rem;
+  background-color: #F5F6F7;
+}
+.invite_title .logo {
+  margin: 0 1.5rem;
+  width: 8rem;
+  border-radius: 12px;
+}
+.invite_title .tip1 {
+  font-size: 3.2rem;
+  color: #282828;
+}
+.invite_title .tip2 {
+  font-size: 2.6rem;
+  color: #282828;
+  opacity: 0.6;
+}
+.invite_box .invite_info {
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.invite_info .name {
+  margin: 4rem 0 1rem;
+  font-size: 2.6rem;
+  color: #282828;
+}
+.invite_info .address {
+  margin: 5px 20px;
+  font-size: 3.2rem;
+  color: #282828;
+  word-wrap: break-word;
+}
+.invite_info .time {
+  margin: 5px 0;
+  font-size: 2.4rem;
+  color: #909497;
+}
+/* 按钮 */
+.btn_control {
+  margin: 3.5rem 0;
+  width: 70%;
+  height: 2.6em;
+  font-size: 3.4rem;
+  color: #ffffff;
+  background-color: #547cff;
+  border-radius: 50px;
+  border: none;
+  outline: none;
+}
+.saveBtn{
+    margin: 3.5rem 0;
+    width: 70%;
+    height: 2.6em;
+    font-size: 3.4rem;
+    color: #F32539;
+    background-color: white;
+    border-radius: 50px;
+    border:1px solid rgba(243,37,57,1);
+    outline: none;
+}
+.iPhoneA{
+    display: block;
+    text-decoration: none;
+    color: #F32539;
+}
+.btn_control:active {
+  background-color: #4c75fc;
+}
+/* 弹框 */
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  max-width: 640px;
+  z-index: 9;
+}
+.modal_mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.iphone_content {
+  position: relative;
+  padding: 10px 30px;
+  text-align: right;
+  z-index: 1;
+}

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="black" name="apple-mobile-web-app-status-bar-style">
+  <meta content="telephone=no" name="format-detection">
+  <meta content="email=no" name="format-detection">
+  <title>我在这里，你在哪？</title>
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-9713501-33', 'auto');
+    ga('send', 'pageview', location.href);
+  </script>
+  <!-- End Google Analytics -->
+  <link rel="stylesheet" href="./css/common.css">
+   <link rel="stylesheet" href="./css/index.css">
+  <!--<link rel="stylesheet" href="./css/index.min.css">-->
+  <script src="./js/calc-size.js"></script>
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body ontouchstart>
+  <div id="wrap" v-cloak>
+    <!-- 页面内容 -->
+    <section class="content">
+        <video muted style="width: 100%" loop autoplay="autoplay" x5-playsinline="" playsinline="" webkit-playsinline="" poster="" x-webkit-airplay="allow" preload="auto">
+            <source src="./images/eg.mp4" type="video/mp4">
+        </video>
+      <div class="invite_box box2 box2New">
+        <div class="invite_title">
+          <img class="logo" src="images/logo.png" alt="">
+          <div>
+            <p class="tip1">守护TA</p>
+            <p class="tip2">{{ subtitle }}</p>
+          </div>
+        </div>
+        <div class="invite_info">
+          <p class="name">{{ info.name }}</p>
+          <p class="address">{{ address }}</p>
+          <p class="time">{{ formatTime }}</p>
+          <button class="btn_control" @click="refreshLoc"  :data-clipboard-text="formatClip">{{ btnLabel }}</button>
+        </div>
+      </div>
+    </section>
+    <!-- 弹框（提示打开浏览器访问） -->
+    <section class="modal" v-if="showAndroidModal" @click="showAndroidModal = false">
+      <div class="modal_mask"></div>
+      <div class="iphone_content">
+        <img src="./images/tip.png" width="70%" />
+      </div>
+    </section>
+  </div>
+  <script src="./js/vue.min.js"></script>
+  <script src="./js/axios.min.js"></script>
+  <script src="./js/base64.min.js"></script>
+  <script src="./js/clipboard.min.js"></script>
+  <script src="./js/jsonp.js"></script>
+  <script src="./js/log-config.js"></script>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=2kyKcLdIelwLUKKzhv4s7mS9emF5mNGv"></script>
+  <script>
+    // 复制信息至粘贴板
+    // var clipboard = new ClipboardJS('.btn_control');
+    // clipboard.on('success', function(e) {
+    //   app.receiveIntive();
+    // });
+    // clipboard.on('error', function(e) {
+    //   app.receiveIntive();
+    // });
+
+    var app = new Vue({
+      el: '#wrap',
+      data: {
+        uid: "", // 用户ID
+        uLink: '', // 通用链接
+        info: {
+          name: "",
+          lng: "",
+          lat: "",
+          avatar: "",
+          updateTime: ""
+        }, // 用户信息
+        address: "",
+        showAndroidModal: false,
+        isZh: false,
+        subtitle: '',
+        btnLabel: ''
+      },
+      created() {
+        var language = navigator.language;
+        this.isZh = /^zh/i.test(language);
+
+        this.subtitle = '追踪实时位置 - 历史运动轨迹 - 位置更新提醒';
+        this.btnLabel = '立即刷新';
+
+        if (!this.isZh) {
+          this.subtitle = 'Track real-time location-Historical';
+          this.btnLabel = 'Refresh location'
+        }
+      },
+      computed: {
+        // 粘贴板数据
+        formatClip() {
+          var base64Str = window.location.search.slice(1) || "nothing";
+          if (base64Str.indexOf("&") > -1) {
+            base64Str = base64Str.split("&")[0];
+          }
+          return base64Str;
+        },
+        // 距离时间
+        formatTime() {
+          if (!this.info.updateTime) return;
+          var str = "";
+          var currTime = new Date().getTime();
+          var diff = (currTime - this.info.updateTime) / 1000;
+          switch (true) {
+            case diff <= 30: str = this.isZh ? "刚刚": "Just now"; break;
+            case diff <= 60: str = Math.floor(diff) + (this.isZh ? "秒前" : ' secends ago'); break;
+            case 60 < diff && diff <= 3600: str = Math.floor(diff / 60) + (this.isZh ? " 分钟前": " minutes age"); break;
+            case 3600 < diff && diff <= 86400: str = Math.floor(diff / 3600) + (this.isZh ? "小时前" : " hours ago"); break;
+            case 86400 < diff: str = Math.floor(diff / 86400) + (this.isZh ? "天前" : " days ago"); break;
+          }
+          return str;
+        }
+      },
+      mounted() {
+        this.formatParams(); // 解密链接参数
+        this.getBdPoint(); // 转换坐标GPS => BD
+        this.getInfo(); // 获取头像、昵称、坐标等信息
+        logEvent({
+          projectName: 'qx_baidu_a',
+          uid: this.uid,
+          action: 'view',
+          category: 'page',
+          version: this.getQueryString('version')
+        });
+      },
+      methods: {
+          refreshLoc(){//刷新位置
+              this.getInfo(); // 获取头像、昵称、坐标等信息
+          } ,
+        // 解密链接参数
+        formatParams() {
+          var base64Str = window.location.search.slice(1);
+          if (base64Str.indexOf("&") > -1) {
+            base64Str = base64Str.split("&")[0];
+          }
+          var redundantStr = base64Str.slice(8, 40);
+          base64Str = base64Str.replace(redundantStr, '');
+          base64Str = decodeURIComponent(base64Str);
+          var decodeVal = Base64.decode(base64Str) || '=';
+          var decodeObj = this.strToObj(decodeVal);
+          console.log(decodeObj)
+          this.uid = decodeObj['uid'];
+          this.cid = decodeObj['cid'];
+          this.uLink = decodeObj['uLink'] ? decodeURIComponent(decodeObj['uLink']) : '';
+          this.info.lng = decodeObj['lng'];
+          this.info.lat = decodeObj['lat'];
+          this.info.updateTime = decodeObj['timestamp'];
+        },
+        // 获取头像、昵称、坐标等信息 => 赋值 => 坐标转换标记
+        getInfo() {
+          if (!this.uid) return;
+          axios.post("https://gstar.ztsafe.com/users/getUser", {
+            uid: this.uid
+          }).then((res) => {
+            var result = res.data;
+            this.info.name = result.data.name;
+            this.info.avatar = result.data.avatar || "./images/default.png";
+            document.title = "我在这里，你在哪？";
+          });
+        },
+        // 转换坐标GPS => BD; // 逆地址解析
+        getBdPoint() {
+          var _self = this;
+          var url = 'https://api.map.baidu.com/geoconv/v1/?coords=' + this.info.lng + ',' + this.info.lat + '&from=1&to=5&ak=2kyKcLdIelwLUKKzhv4s7mS9emF5mNGv'
+          jsonp(url, {}, function (err, data) {
+            if (err) throw err;
+            var res = data.result[0]
+            var myGeo = new BMap.Geocoder();
+            var bdPoint = new BMap.Point(res.x, res.y);
+            myGeo.getLocation(bdPoint, (result) => {
+              if (result) {
+                _self.address = result.surroundingPois[0].address;
+              }
+            });
+          });
+        },
+        // 特定字符串转对象
+        strToObj(str) {
+          var arr = str.split('&');
+          var obj = {}
+          for (var i = 0; i < arr.length; i++) {
+            var tempArr = arr[i].split('=');
+            obj[tempArr[0]] = tempArr[1]
+          }
+          return obj
+        },
+        // 接受邀请点击
+        receiveIntive() {
+          logEvent({
+            projectName: 'qx_baidu_a',
+            uid: this.uid,
+            action: 'click',
+            category: 'share',
+            version: this.getQueryString('version')
+          });
+          var u = window.navigator.userAgent;
+          var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios终端
+          var isWechat = !!u.match(/MicroMessenger/i);
+          if (isiOS) {
+            ga('send', 'event', 'qx_invite_baidu_A 点击按钮（IOS）', this.uid);
+            if (!isWechat && this.uLink) {
+              // window.location.href = "https://ff.ggsafe.com/ff/"
+              window.location.href = this.uLink;
+            } else {
+              window.location.href = "https://itunes.apple.com/cn/app/id1472461188"
+            }
+          } else {
+            ga('send', 'event', 'qx_invite_baidu_A 点击按钮（Android）', this.uid);
+            alert('暂时没有Android下载渠道')
+            // window.location.href = "http://wifi.ggsafe.com/wnmm/download/ff.apk";
+          }
+        },
+        getQueryString(name) {
+          let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+          let r = window.location.search.substr(1).match(reg);
+          if (r != null) return unescape(r[2]);
+          return null;
+        }
+      }
+    })
+  </script>
+</body>
+</html>
