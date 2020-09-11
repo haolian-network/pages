@@ -111,7 +111,7 @@
   height: 2.6em;
   font-size: 3.4rem;
   color: #ffffff;
-  background-color: #547cff;
+  background-color: #f67a3b;
   border-radius: 50px;
   border: none;
   outline: none;
@@ -133,7 +133,7 @@
     color: #F32539;
 }
 .btn_control:active {
-  background-color: #4c75fc;
+  background-color: #e76716;
 }
 /* 弹框 */
 .modal {
